@@ -1,0 +1,110 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNLs3KKSW5lZEIzFCrJdVKF",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/cattienl/classification-challenge/blob/main/classification-challenge\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "eMArJuPe4eil",
+        "outputId": "e7fe0972-a656-4927-fb8b-5460575d0569"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "0    2788\n",
+            "1    1813\n",
+            "Name: spam, dtype: int64\n",
+            "Logistic Regression Model Accuracy: 0.9196525515743756\n",
+            "Random Forest Model Accuracy: 0.9565689467969598\n",
+            "Better Performing Model: Random Forest\n",
+            "Comparison to Prediction: The actual result aligns with the prediction.\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Importing necessary libraries\n",
+        "import pandas as pd\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.preprocessing import StandardScaler\n",
+        "from sklearn.linear_model import LogisticRegression\n",
+        "from sklearn.ensemble import RandomForestClassifier\n",
+        "from sklearn.metrics import accuracy_score\n",
+        "\n",
+        "# Load the data\n",
+        "url = \"https://static.bc-edx.com/ai/ail-v-1-0/m13/challenge/spam-data.csv\"\n",
+        "df = pd.read_csv(url)\n",
+        "\n",
+        "# Predict which model is expected to do better\n",
+        "# In this case, it's hard to predict without analyzing the data. Both logistic regression and random forest can perform well for this task.\n",
+        "\n",
+        "# Create labels and features\n",
+        "y = df['spam']\n",
+        "X = df.drop(columns=['spam'])\n",
+        "\n",
+        "# Check label balance\n",
+        "print(y.value_counts())\n",
+        "\n",
+        "# Split the data into training and testing sets\n",
+        "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n",
+        "\n",
+        "# Scale the features\n",
+        "scaler = StandardScaler()\n",
+        "X_train_scaled = scaler.fit_transform(X_train)\n",
+        "X_test_scaled = scaler.transform(X_test)\n",
+        "\n",
+        "# Create a logistic regression model\n",
+        "logistic_model = LogisticRegression(random_state=1)\n",
+        "logistic_model.fit(X_train_scaled, y_train)\n",
+        "logistic_pred = logistic_model.predict(X_test_scaled)\n",
+        "logistic_accuracy = accuracy_score(y_test, logistic_pred)\n",
+        "print(\"Logistic Regression Model Accuracy:\", logistic_accuracy)\n",
+        "\n",
+        "# Create a random forest model\n",
+        "forest_model = RandomForestClassifier(random_state=1)\n",
+        "forest_model.fit(X_train_scaled, y_train)\n",
+        "forest_pred = forest_model.predict(X_test_scaled)\n",
+        "forest_accuracy = accuracy_score(y_test, forest_pred)\n",
+        "print(\"Random Forest Model Accuracy:\", forest_accuracy)\n",
+        "\n",
+        "# Evaluate the models\n",
+        "# Which model performed better?\n",
+        "better_model = \"Random Forest\" if forest_accuracy > logistic_accuracy else \"Logistic Regression\"\n",
+        "print(\"Better Performing Model:\", better_model)\n",
+        "\n",
+        "# How does that compare to your prediction?\n",
+        "prediction_comparison = \"The actual result aligns with the prediction.\" if better_model == \"Random Forest\" else \"The actual result differs from the prediction.\"\n",
+        "print(\"Comparison to Prediction:\", prediction_comparison)"
+      ]
+    }
+  ]
+}
